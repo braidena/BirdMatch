@@ -1,0 +1,50 @@
+[
+  {
+    "variant": "mfcc",
+    "dim": 20,
+    "n_queries_total": 250,
+    "n_queries_dtw": 40,
+    "n_reference": 947,
+    "summary_1nn": 0.208,
+    "dtw_1nn": 0.15,
+    "dtw_5nn_vote": 0.075,
+    "dtw_seconds": 74,
+    "ms_per_pair": 7.8
+  },
+  {
+    "variant": "mfcc_cmn",
+    "dim": 20,
+    "n_queries_total": 250,
+    "n_queries_dtw": 40,
+    "n_reference": 947,
+    "summary_1nn": 0.224,
+    "dtw_1nn": 0.05,
+    "dtw_5nn_vote": 0.025,
+    "dtw_seconds": 75,
+    "ms_per_pair": 8.0
+  },
+  {
+    "variant": "pcen",
+    "dim": 40,
+    "n_queries_total": 250,
+    "n_queries_dtw": 40,
+    "n_reference": 947,
+    "summary_1nn": 0.236,
+    "dtw_1nn": 0.225,
+    "dtw_5nn_vote": 0.225,
+    "dtw_seconds": 79,
+    "ms_per_pair": 8.4
+  },
+  {
+    "variant": "logmel_floor",
+    "dim": 40,
+    "n_queries_total": 250,
+    "n_queries_dtw": 40,
+    "n_reference": 947,
+    "summary_1nn": 0.24,
+    "dtw_1nn": 0.2,
+    "dtw_5nn_vote": 0.175,
+    "dtw_seconds": 82,
+    "ms_per_pair": 8.6
+  }
+]

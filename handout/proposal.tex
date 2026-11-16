@@ -1,0 +1,57 @@
+\documentclass[10pt]{article}
+\usepackage[letterpaper,margin=0.55in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage[hidelinks]{hyperref}
+
+\setlist{nosep,leftmargin=1.2em}
+\titleformat{\section}{\large\bfseries}{}{0pt}{}
+\titlespacing*{\section}{0pt}{7pt}{3pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\pagestyle{empty}
+
+\begin{document}
+
+{\centering
+{\Large\bfseries BirdMatch: Scalable Bird-Call Matching with\\[2pt]
+Dynamic Time Warping and Locality-Sensitive Hashing}\\[4pt]
+Project Proposal \quad|\quad Analysis of Algorithms \quad|\quad [Your Name]\par}
+
+\section{Project Description}
+Given a short recording of a bird call, how do we find the closest matches in a large reference collection of labeled recordings, and how does that search behave as the collection grows? This project builds a bird-call matching system and packages it as a self-contained assignment: a LaTeX handout, a starter code package with stubs and tests, and a complete reference solution that I implement and run. The signal-processing front end is supplied as a working ``black box'' so the work centers on an exact dynamic-programming comparison, why brute-force search stops scaling, and how an approximate index recovers speed at a small cost in accuracy.
+
+\section{Algorithms}
+\textbf{Feature extraction (provided).} Each clip is converted to a variable-length sequence of 20-dimensional MFCC vectors using librosa~\cite{librosa} to compute the short-time Fourier transform, which relies on the $O(n\log n)$ FFT~\cite{cooley}, followed by a Mel filterbank and a DCT~\cite{davis}. Calls from one species vary in length and tempo, so sequences cannot be compared frame by frame.
+
+\textbf{Dynamic Time Warping (implemented).} DTW~\cite{sakoe} finds the lowest-cost monotone alignment between sequences of lengths $n$ and $m$ using the recurrence $D[i,j]=c(i,j)+\min(D[i{-}1,j],D[i,j{-}1],D[i{-}1,j{-}1])$, in $O(nm)$ time. Like edit distance, it is a dynamic program whose alignment path can be inspected.
+
+\textbf{Brute-force search (baseline).} Compare the query with all $N$ reference clips by DTW: $O(N\,nm)$ per query.
+
+\textbf{Locality-sensitive hashing + DTW rerank (scaling).} Each clip is also summarized as a fixed-length vector (per-coefficient mean and standard deviation). Random-hyperplane LSH~\cite{indyk,charikar} hashes these vectors with $k$ bits into each of $L$ tables, so similar clips tend to share a bucket. A query retrieves a candidate set $C$ from the buckets and DTW is run only on $C$, giving roughly $O(Lkd + |C|\,nm)$ per query with $|C|\ll N$. This ``cheap filter, then exact rerank'' design is the pattern used in large-scale audio search~\cite{wang}.
+
+\section{Data}
+Recordings come from Xeno-canto~\cite{xc}, a public repository of Creative-Commons-licensed bird recordings labeled only with the species name. The reference set is a real subset with a target of 20--50 species and a few thousand recordings (final size depends on the site's API terms). The ``unknown'' query songs are held-out recordings that are never inserted into the index. Because the LSH index needs only a 40-dimensional summary per clip (about 320 MB per million clips), a second experiment grows the index to $10^5$--$10^6$ entries by adding summaries of further recordings where available and synthetic perturbations of real summary vectors; these extra entries test query speed and recall, not species accuracy. The cost of searching the full archive (on the order of a million recordings) is then extrapolated from the measured growth curves.
+
+\section{Evaluation and Deliverables}
+(1) Top-1 and top-5 species accuracy on real held-out queries, brute-force DTW versus LSH+DTW (species chosen by vote among the nearest matches); (2) LSH recall of the true brute-force top-$k$ as $L$ and $k$ vary; (3) query time versus $N$ from $10^2$ to $10^6$ for both methods, with fitted growth curves and the full-archive extrapolation; (4) an optional 2-D UMAP~\cite{umap} projection of the clips, colored by species, as a visual check of cluster overlap. Deep-learning systems such as BirdNET~\cite{birdnet} reach higher accuracy but are not analyzable in Big-O terms; the goal here is to understand and measure the algorithms.
+
+\section*{References}
+\begingroup\footnotesize
+\setlength{\parskip}{1pt}
+\renewcommand{\section}[2]{}
+\begin{thebibliography}{9}\setlength{\itemsep}{0pt}
+\bibitem{cooley} J.~W. Cooley and J.~W. Tukey, ``An algorithm for the machine calculation of complex Fourier series,'' \emph{Math.\ Comput.}, 19(90):297--301, 1965.
+\bibitem{davis} S.~B. Davis and P. Mermelstein, ``Comparison of parametric representations for monosyllabic word recognition in continuously spoken sentences,'' \emph{IEEE Trans.\ ASSP}, 28(4):357--366, 1980.
+\bibitem{sakoe} H. Sakoe and S. Chiba, ``Dynamic programming algorithm optimization for spoken word recognition,'' \emph{IEEE Trans.\ ASSP}, 26(1):43--49, 1978.
+\bibitem{indyk} P. Indyk and R. Motwani, ``Approximate nearest neighbors: towards removing the curse of dimensionality,'' \emph{Proc.\ STOC}, 604--613, 1998.
+\bibitem{charikar} M.~S. Charikar, ``Similarity estimation techniques from rounding algorithms,'' \emph{Proc.\ STOC}, 380--388, 2002.
+\bibitem{wang} A. Wang, ``An industrial-strength audio search algorithm,'' \emph{Proc.\ ISMIR}, 2003.
+\bibitem{xc} Xeno-canto Foundation, ``Xeno-canto: sharing wildlife sounds from around the world,'' \url{https://xeno-canto.org}.
+\bibitem{librosa} B. McFee et al., ``librosa: Audio and music signal analysis in Python,'' \emph{Proc.\ SciPy}, 18--25, 2015.
+\bibitem{umap} L. McInnes, J. Healy, and J. Melville, ``UMAP: Uniform manifold approximation and projection for dimension reduction,'' arXiv:1802.03426, 2018.
+\bibitem{birdnet} S. Kahl et al., ``BirdNET: A deep learning solution for avian diversity monitoring,'' \emph{Ecol.\ Inform.}, 61:101236, 2021.
+\end{thebibliography}
+\endgroup
+
+\end{document}

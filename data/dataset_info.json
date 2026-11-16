@@ -1,0 +1,15 @@
+{
+  "max_seconds": 10.0,
+  "pool": 4,
+  "n_mfcc": 20,
+  "sample_rate": 22050,
+  "hop_length": 256,
+  "seconds_per_frame": 0.046439909297052155,
+  "n_clips": 1199,
+  "n_species": 20,
+  "frames_min": 5,
+  "frames_mean": 201.8281901584654,
+  "frames_max": 215,
+  "query_split": "by recordist",
+  "seed": 0
+}

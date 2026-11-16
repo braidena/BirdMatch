@@ -1,0 +1,21 @@
+# One "Genus species" per line. Edit freely; these are widely recorded species.
+Turdus merula
+Turdus migratorius
+Erithacus rubecula
+Parus major
+Cyanistes caeruleus
+Troglodytes troglodytes
+Fringilla coelebs
+Sylvia atricapilla
+Phylloscopus collybita
+Luscinia megarhynchos
+Cardinalis cardinalis
+Cyanocitta cristata
+Zonotrichia albicollis
+Melospiza melodia
+Poecile atricapillus
+Corvus corax
+Strix aluco
+Cuculus canorus
+Passer domesticus
+Sturnus vulgaris
